@@ -1,0 +1,48 @@
+# https://github.com/awslabs/serverless-application-model/blob/develop/versions/2016-10-31.md
+# Indentation needs to be set with spaces, because YAML...
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+    JoinCommunity:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: join/join-community.default
+            Runtime: nodejs18.x
+            CodeUri: ./dist/join/join-community
+            Timeout: 5
+            # Layers:
+            #     - !Sub "arn:aws:lambda:${AWS::Region}:580247275435:layer:LambdaInsightsExtension:14"
+            Policies:
+                - AWSLambdaVPCAccessExecutionRole
+                - AmazonSESFullAccess
+                - AmazonSQSFullAccess
+                - SecretsManagerReadWrite
+                - arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy
+                # - arn:aws:iam::478062583808:policy/CloudWatchPolicyForLambda # See https://stackoverflow.com/questions/51166504/disable-cloudwatch-to-monitor-logs-for-lambda-function
+            Tags:
+                LambdaName: api-join-community
+            AutoPublishAlias: live
+            FunctionUrlConfig:
+                AuthType: NONE
+    RetrieveUserCommunities:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: retrieve/_retrieve-user-communities.default
+            Runtime: nodejs18.x
+            CodeUri: ./dist/retrieve/_retrieve-user-communities
+            Timeout: 20
+            # Layers:
+            #     - !Sub "arn:aws:lambda:${AWS::Region}:580247275435:layer:LambdaInsightsExtension:14"
+            Policies:
+                - AWSLambdaVPCAccessExecutionRole
+                - AmazonSESFullAccess
+                - AmazonSQSFullAccess
+                - SecretsManagerReadWrite
+                - arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy
+                # - arn:aws:iam::478062583808:policy/CloudWatchPolicyForLambda # See https://stackoverflow.com/questions/51166504/disable-cloudwatch-to-monitor-logs-for-lambda-function
+            Tags:
+                LambdaName: api-retrieve-user-communities
+            AutoPublishAlias: live
+            FunctionUrlConfig:
+                AuthType: NONE
