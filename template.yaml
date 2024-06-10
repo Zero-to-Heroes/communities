@@ -31,7 +31,7 @@ Resources:
             Handler: retrieve/_retrieve-user-communities.default
             Runtime: nodejs18.x
             CodeUri: ./dist/retrieve/_retrieve-user-communities
-            Timeout: 20
+            Timeout: 10
             # Layers:
             #     - !Sub "arn:aws:lambda:${AWS::Region}:580247275435:layer:LambdaInsightsExtension:14"
             Policies:
@@ -43,6 +43,27 @@ Resources:
                 # - arn:aws:iam::478062583808:policy/CloudWatchPolicyForLambda # See https://stackoverflow.com/questions/51166504/disable-cloudwatch-to-monitor-logs-for-lambda-function
             Tags:
                 LambdaName: api-retrieve-user-communities
+            AutoPublishAlias: live
+            FunctionUrlConfig:
+                AuthType: NONE
+    RetrieveCommunity:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: retrieve/_retrieve-community.default
+            Runtime: nodejs18.x
+            CodeUri: ./dist/retrieve/_retrieve-community
+            Timeout: 10
+            # Layers:
+            #     - !Sub "arn:aws:lambda:${AWS::Region}:580247275435:layer:LambdaInsightsExtension:14"
+            Policies:
+                - AWSLambdaVPCAccessExecutionRole
+                - AmazonSESFullAccess
+                - AmazonSQSFullAccess
+                - SecretsManagerReadWrite
+                - arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy
+                # - arn:aws:iam::478062583808:policy/CloudWatchPolicyForLambda # See https://stackoverflow.com/questions/51166504/disable-cloudwatch-to-monitor-logs-for-lambda-function
+            Tags:
+                LambdaName: api-retrieve-community
             AutoPublishAlias: live
             FunctionUrlConfig:
                 AuthType: NONE

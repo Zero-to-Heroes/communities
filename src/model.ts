@@ -20,17 +20,18 @@ export interface RetrieveCommunityInput {
 	communityId: string;
 }
 
-export interface CommunityInfo {
-	id: number;
+export interface CommunityOverview {
+	id: string;
 	name: string;
 	description: string;
+	type: 'constructed' | 'battlegrounds' | 'arena';
+}
+
+export interface CommunityInfo extends CommunityOverview {
 	numberOfMembers: number;
 	totalGamesPlayed: number;
 	totalTimePlayed: number;
 	lastGames: readonly GameInfo[];
-	constructed: CommunityInfoConstructed;
-	battlegrounds: CommunityInfoBattlegrounds;
-	arena: CommunityInfoArena;
 }
 
 export interface CommunityInfoGameMode {

@@ -1,6 +1,6 @@
 import { getConnection } from '@firestone-hs/aws-lambda-utils';
 import { JoinCommunityInput } from '../model';
-import { retrieveCommunityInfo } from '../retrieve/community-info';
+import { retrieveCommunitiesOverview } from '../retrieve/community-info';
 
 export default async (event): Promise<any> => {
 	const headers = {
@@ -33,7 +33,7 @@ export default async (event): Promise<any> => {
 	}
 
 	// Now retrieve the community info
-	const community = await retrieveCommunityInfo([input.code])?.[0];
+	const community = await retrieveCommunitiesOverview([input.code])?.[0];
 
 	return {
 		statusCode: 200,
