@@ -13,7 +13,6 @@ export const retrieveCommunitiesOverview = async (
 	return communityInfoResult.map((communityInfo) => {
 		const result: CommunityOverview = {
 			id: communityInfo.communityId,
-			type: communityInfo.type,
 			name: communityInfo.name,
 			description: communityInfo.description,
 		};

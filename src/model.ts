@@ -22,19 +22,23 @@ export interface CommunityOverview {
 	id: string;
 	name: string;
 	description: string;
-	type: 'constructed' | 'battlegrounds' | 'arena';
 }
 
 export interface CommunityInfo extends CommunityOverview {
 	numberOfMembers: number;
+	members: string[];
 	totalGamesPlayed: number;
 	totalTimePlayed: number;
-	lastGames: readonly GameInfo[];
+	standardInfo: CommunityInfoConstructed;
+	wildInfo: CommunityInfoConstructed;
+	twistInfo: CommunityInfoConstructed;
+	battlegroundsInfo: CommunityInfoBattlegrounds;
+	arenaInfo: CommunityInfoArena;
 }
 
 export interface CommunityInfoGameMode {
 	leaderboard: readonly LeaderboardEntry[];
-	lastGames: readonly GameInfo[];
+	// lastGames: readonly GameInfo[];
 }
 
 export interface CommunityInfoConstructed extends CommunityInfoGameMode {}

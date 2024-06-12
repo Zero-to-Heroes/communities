@@ -1,5 +1,6 @@
 import { getConnection } from '@firestone-hs/aws-lambda-utils';
-import { JoinCommunityInput } from '../model';
+import { retrieveCommunityInfo, saveCommunityInfo } from '../cron/internal/community';
+import { CommunityInfo, JoinCommunityInput } from '../model';
 import { retrieveCommunitiesOverview } from '../retrieve/community-info';
 
 export default async (event): Promise<any> => {
@@ -42,7 +43,7 @@ export default async (event): Promise<any> => {
 	};
 };
 
-async function performJoin(userName: string, code: string): Promise<string | null> {
+const performJoin = async (userName: string, code: string): Promise<string | null> => {
 	const communityIdQuery = `
 		SELECT id FROM communities WHERE joinCode = ?
 	`;
@@ -61,5 +62,9 @@ async function performJoin(userName: string, code: string): Promise<string | nul
 	`;
 	const joinResult: any[] = await mysql.query(joinQuery, [communityId, userName]);
 	console.debug('joinResult', joinResult);
+	const communityInfo: CommunityInfo = await retrieveCommunityInfo(communityId);
+	communityInfo.members = communityInfo.members || [];
+	communityInfo.members.push(userName);
+	await saveCommunityInfo(communityInfo);
 	return 'ok';
-}
+};

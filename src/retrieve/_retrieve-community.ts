@@ -1,6 +1,5 @@
-import { getConnection } from '@firestone-hs/aws-lambda-utils';
-import { CommunityInfo, CommunityOverview, RetrieveCommunityInput } from '../model';
-import { retrieveCommunitiesOverview } from './community-info';
+import { retrieveCommunityInfo } from '../cron/internal/community';
+import { CommunityInfo, RetrieveCommunityInput } from '../model';
 
 export default async (event): Promise<any> => {
 	const headers = {
@@ -21,26 +20,20 @@ export default async (event): Promise<any> => {
 	}
 	console.debug('received event', event);
 	const input: RetrieveCommunityInput = JSON.parse(event.body);
-	// TODO: Check if user can retrieve the community info
-	const overview: CommunityOverview = (await retrieveCommunitiesOverview([input.communityId]))?.[0];
-	const communityInfo = await retrieveCommunityDetails(overview);
+	const communityInfo = await retrieveCommunityInfo(input.communityId);
+	if (!input.userName?.length || !communityInfo?.members?.includes(input.userName)) {
+		return {
+			statusCode: 403,
+			headers: headers,
+			body: JSON.stringify({ error: `User ${input.userName} not part of community ${input.communityId}` }),
+		};
+	}
+
+	const finalCommunity: CommunityInfo = { ...communityInfo };
+	delete finalCommunity.members;
 	return {
 		statusCode: 200,
 		headers: headers,
-		body: JSON.stringify(communityInfo),
+		body: JSON.stringify(finalCommunity),
 	};
-};
-
-const retrieveCommunityDetails = async (overview: CommunityOverview): Promise<CommunityInfo> => {
-	const mysql = await getConnection();
-	const totalMembersCountQuery = `
-		SELECT count(*) as total FROM community_members WHERE communityId = ?
-	`;
-	const totalMembersCounts: readonly any[] = await mysql.query(totalMembersCountQuery, [overview.id]);
-	mysql.end();
-	const result: CommunityInfo = {
-		...overview,
-		numberOfMembers: totalMembersCounts[0]?.total,
-	} as CommunityInfo;
-	return result;
 };

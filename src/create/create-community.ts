@@ -28,9 +28,6 @@ export default async (event): Promise<any> => {
 	// }
 	// // Add yourself to the members
 	// // Create the file that stores the data
-	// // TODO: this file will be refreshed after every game played by a member, so I'm not sure
-	// // it's the best idea (lot of PUT requests), so it might move out of a file and into a DB table
-	// // later on
 	// return {
 	// 	statusCode: 200,
 	// 	headers: headers,
