@@ -21,14 +21,12 @@ export const retrieveCommunitiesOverview = async (
 	});
 };
 
-export const retrieveJoinedCommunities = async (
-	allUserIds: readonly string[],
-): Promise<readonly CommunityOverview[]> => {
+export const retrieveJoinedCommunities = async (userName: string): Promise<readonly CommunityOverview[]> => {
 	const query = `
-        SELECT communityId FROM community_members WHERE userId IN (?)
+        SELECT communityId FROM community_members WHERE userName = ?
     `;
 	const mysql = await getConnection();
-	const result: any[] = await mysql.query(query, [allUserIds]);
+	const result: any[] = await mysql.query(query, [userName]);
 	mysql.end();
 	const joinedCommunityIds = result.map((r) => r.communityId);
 	return retrieveCommunitiesOverview(joinedCommunityIds);

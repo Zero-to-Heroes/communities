@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 export interface UserInfoInput {
-	userId: string;
-	userName?: string;
+	userName: string;
 }
 
 export interface JoinCommunityInput extends UserInfoInput {
@@ -9,14 +8,13 @@ export interface JoinCommunityInput extends UserInfoInput {
 }
 
 export interface CreateCommunityInput {
-	userId: string;
-	userName?: string;
+	userName: string;
 	name: string;
 	description: string;
 }
 
 export interface RetrieveCommunityInput {
-	userId: string;
+	userName: string;
 	communityId: string;
 }
 

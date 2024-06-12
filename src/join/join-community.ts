@@ -22,7 +22,7 @@ export default async (event): Promise<any> => {
 
 	console.debug('received event', event);
 	const input: JoinCommunityInput = JSON.parse(event.body);
-	const joinResult = await performJoin(input.userId, input.code);
+	const joinResult = await performJoin(input.userName, input.code);
 	if (!joinResult) {
 		const response = {
 			statusCode: 400,
@@ -42,7 +42,7 @@ export default async (event): Promise<any> => {
 	};
 };
 
-async function performJoin(userId: string, code: string): Promise<string | null> {
+async function performJoin(userName: string, code: string): Promise<string | null> {
 	const communityIdQuery = `
 		SELECT id FROM communities WHERE joinCode = ?
 	`;
@@ -56,10 +56,10 @@ async function performJoin(userId: string, code: string): Promise<string | null>
 
 	const joinQuery = `
 		INSERT IGNORE INTO community_members 
-		(communityId, userId)
+		(communityId, userName)
 		VALUES (?, ?)
 	`;
-	const joinResult: any[] = await mysql.query(joinQuery, [communityId, userId]);
+	const joinResult: any[] = await mysql.query(joinQuery, [communityId, userName]);
 	console.debug('joinResult', joinResult);
 	return 'ok';
 }
