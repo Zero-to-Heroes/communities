@@ -33,6 +33,7 @@ export interface CommunityInfo extends CommunityOverview {
 	wildInfo: CommunityInfoConstructed;
 	twistInfo: CommunityInfoConstructed;
 	battlegroundsInfo: CommunityInfoBattlegrounds;
+	battlegroundsDuoInfo: CommunityInfoBattlegrounds;
 	arenaInfo: CommunityInfoArena;
 }
 
@@ -57,5 +58,7 @@ export interface GameInfo {
 
 export interface LeaderboardEntry {
 	name: string;
-	playerRank: string;
+	displayName: string;
+	currentRank: string;
+	bestRank: string;
 }

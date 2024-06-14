@@ -29,11 +29,19 @@ export default async (event): Promise<any> => {
 		};
 	}
 
-	const finalCommunity: CommunityInfo = { ...communityInfo };
-	delete finalCommunity.members;
+	const finalCommunity: CommunityInfo = sanitizeForOutput(communityInfo);
 	return {
 		statusCode: 200,
 		headers: headers,
 		body: JSON.stringify(finalCommunity),
 	};
+};
+
+const sanitizeForOutput = (community: CommunityInfo): CommunityInfo => {
+	const result = { ...community };
+	delete result.members;
+	result.standardInfo.leaderboard = result.standardInfo.leaderboard.slice(0, 5);
+	result.wildInfo.leaderboard = result.wildInfo.leaderboard.slice(0, 5);
+	result.twistInfo.leaderboard = result.twistInfo.leaderboard.slice(0, 5);
+	return result;
 };

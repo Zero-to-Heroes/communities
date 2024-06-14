@@ -1,12 +1,12 @@
-import { CommunityInfoConstructed } from '../../../model';
+import { CommunityInfoBattlegrounds, CommunityInfoConstructed } from '../../../model';
 import { InternalReplaySummaryDbRow } from '../replay-summary';
 import { updateLeaderboard } from './leaderboard';
 
-export const updateConstructedCommunityInfo = (
-	communityInfo: CommunityInfoConstructed,
+export const updateBattlegroundsCommunityInfo = (
+	communityInfo: CommunityInfoBattlegrounds,
 	games: readonly InternalReplaySummaryDbRow[],
 ): CommunityInfoConstructed => {
-	const result = communityInfo ?? ({} as CommunityInfoConstructed);
+	const result = communityInfo ?? ({} as CommunityInfoBattlegrounds);
 	result.leaderboard = updateLeaderboard(result?.leaderboard ?? [], games, leaderboardComparator, rankConverter);
 	return result;
 };
@@ -19,14 +19,5 @@ const leaderboardComparator = (a: string, b: string): number => {
 
 // The higher, the better
 const rankConverter = (rank: string): number => {
-	if (rank.includes('legend-')) {
-		const legendRank = parseInt(rank.split('-')[1]);
-		const lowestLegendRank = 200_000;
-		const internalRank = lowestLegendRank - legendRank;
-		return internalRank;
-	}
-
-	const [league, division] = rank.split('-');
-	const internalRank = 10 * parseInt(league) + parseInt(division);
-	return 50 - internalRank;
+	return parseInt(rank);
 };

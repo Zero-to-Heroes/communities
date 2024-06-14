@@ -29,6 +29,7 @@ export const getRecentGames = async (
 export interface InternalReplaySummaryDbRow {
 	readonly id: number;
 	readonly userName: string;
+	readonly playerName: string;
 	readonly playerRank: string;
 	readonly newPlayerRank: string;
 	readonly gameMode: 'ranked' | 'battlegrounds' | 'battlegrounds-duo' | 'arena';
