@@ -7,10 +7,10 @@ export const updateCommunities = async (
 	communityInfos: readonly InternalCommunityInfo[],
 ): Promise<void> => {
 	for (const communityInfo of communityInfos) {
-		await updateCommunity(
-			communityInfo,
-			games.filter((game) => communityInfo.userNames.includes(game.userName)),
-		);
+		const gamesForCommunity = games.filter((game) => communityInfo.userNames.includes(game.userName));
+		console.log('got games for community', gamesForCommunity?.length, communityInfo.communityId);
+		await updateCommunity(communityInfo, gamesForCommunity);
+		console.log('updated community', communityInfo.communityId);
 	}
 };
 

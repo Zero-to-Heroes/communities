@@ -28,6 +28,7 @@ export const getRecentGames = async (
 
 export interface InternalReplaySummaryDbRow {
 	readonly id: number;
+	readonly creationDate: string;
 	readonly userName: string;
 	readonly playerName: string;
 	readonly playerRank: string;

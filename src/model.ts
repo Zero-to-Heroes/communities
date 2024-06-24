@@ -27,18 +27,22 @@ export interface CommunityOverview {
 export interface CommunityInfo extends CommunityOverview {
 	numberOfMembers: number;
 	members: string[];
-	totalGamesPlayed: number;
-	totalTimePlayed: number;
 	standardInfo: CommunityInfoConstructed;
 	wildInfo: CommunityInfoConstructed;
 	twistInfo: CommunityInfoConstructed;
 	battlegroundsInfo: CommunityInfoBattlegrounds;
 	battlegroundsDuoInfo: CommunityInfoBattlegrounds;
 	arenaInfo: CommunityInfoArena;
+
+	totalGamesPlayed: number;
+	totalTimePlayed: number;
+	gamesInLastSevenDays?: number;
 }
 
 export interface CommunityInfoGameMode {
 	leaderboard: readonly LeaderboardEntry[];
+	gamesPerHour: { [hour: string]: number };
+	gamesInLastSevenDays?: number;
 	// lastGames: readonly GameInfo[];
 }
 

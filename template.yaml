@@ -77,7 +77,7 @@ Resources:
             Runtime: nodejs18.x
             Timeout: 880
             CodeUri: ./dist/cron/_process-recent-games
-            MemorySize: 1000
+            MemorySize: 2000
             ReservedConcurrentExecutions: 10
             # Layers:
             #     - !Sub "arn:aws:lambda:${AWS::Region}:580247275435:layer:LambdaInsightsExtension:14"
@@ -98,4 +98,4 @@ Resources:
                     Type: Schedule
                     Properties:
                         # Cron that runs every 10 minutes
-                        Schedule: cron(0/10 * * * ? *)
+                        Schedule: cron(0/5 * * * ? *)

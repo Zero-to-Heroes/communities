@@ -1,7 +1,6 @@
 import { getConnection } from '@firestone-hs/aws-lambda-utils';
 import { retrieveCommunityInfo, saveCommunityInfo } from '../cron/internal/community';
 import { CommunityInfo, JoinCommunityInput } from '../model';
-import { retrieveCommunitiesOverview } from '../retrieve/community-info';
 
 export default async (event): Promise<any> => {
 	const headers = {
@@ -23,8 +22,9 @@ export default async (event): Promise<any> => {
 
 	console.debug('received event', event);
 	const input: JoinCommunityInput = JSON.parse(event.body);
-	const joinResult = await performJoin(input.userName, input.code);
-	if (!joinResult) {
+	const community = await performJoin(input.userName, input.code);
+	console.debug('joinResult', community, input);
+	if (!community) {
 		const response = {
 			statusCode: 400,
 			body: null,
@@ -34,7 +34,9 @@ export default async (event): Promise<any> => {
 	}
 
 	// Now retrieve the community info
-	const community = await retrieveCommunitiesOverview([input.code])?.[0];
+	// const communityOverviews = await retrieveCommunitiesOverview([input.code]);
+	// const community = communityOverviews?.[0];
+	// console.debug('community', community, communityOverviews);
 
 	return {
 		statusCode: 200,
@@ -43,13 +45,13 @@ export default async (event): Promise<any> => {
 	};
 };
 
-const performJoin = async (userName: string, code: string): Promise<string | null> => {
+const performJoin = async (userName: string, code: string): Promise<CommunityInfo | null> => {
 	const communityIdQuery = `
-		SELECT id FROM communities WHERE joinCode = ?
+		SELECT communityId FROM communities WHERE joinCode = ?
 	`;
 	const mysql = await getConnection();
 	const result = await mysql.query(communityIdQuery, [code]);
-	const communityId = result[0]?.id;
+	const communityId = result[0]?.communityId;
 	if (!communityId) {
 		console.warn('Could not find community with code', code);
 		return null;
@@ -63,8 +65,9 @@ const performJoin = async (userName: string, code: string): Promise<string | nul
 	const joinResult: any[] = await mysql.query(joinQuery, [communityId, userName]);
 	console.debug('joinResult', joinResult);
 	const communityInfo: CommunityInfo = await retrieveCommunityInfo(communityId);
-	communityInfo.members = communityInfo.members || [];
-	communityInfo.members.push(userName);
+	const members = communityInfo.members || [];
+	members.push(userName);
+	communityInfo.members = [...new Set(members)];
 	await saveCommunityInfo(communityInfo);
-	return 'ok';
+	return communityInfo;
 };

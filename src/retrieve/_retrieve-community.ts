@@ -1,5 +1,5 @@
-import { retrieveCommunityInfo } from '../cron/internal/community';
-import { CommunityInfo, RetrieveCommunityInput } from '../model';
+import { retrieveCommunityInfoForOutput } from '../cron/internal/community';
+import { RetrieveCommunityInput } from '../model';
 
 export default async (event): Promise<any> => {
 	const headers = {
@@ -20,7 +20,7 @@ export default async (event): Promise<any> => {
 	}
 	console.debug('received event', event);
 	const input: RetrieveCommunityInput = JSON.parse(event.body);
-	const communityInfo = await retrieveCommunityInfo(input.communityId);
+	const communityInfo = await retrieveCommunityInfoForOutput(input.communityId);
 	if (!input.userName?.length || !communityInfo?.members?.includes(input.userName)) {
 		return {
 			statusCode: 403,
@@ -29,19 +29,9 @@ export default async (event): Promise<any> => {
 		};
 	}
 
-	const finalCommunity: CommunityInfo = sanitizeForOutput(communityInfo);
 	return {
 		statusCode: 200,
 		headers: headers,
-		body: JSON.stringify(finalCommunity),
+		body: JSON.stringify(communityInfo),
 	};
-};
-
-const sanitizeForOutput = (community: CommunityInfo): CommunityInfo => {
-	const result = { ...community };
-	delete result.members;
-	result.standardInfo.leaderboard = result.standardInfo.leaderboard.slice(0, 5);
-	result.wildInfo.leaderboard = result.wildInfo.leaderboard.slice(0, 5);
-	result.twistInfo.leaderboard = result.twistInfo.leaderboard.slice(0, 5);
-	return result;
 };

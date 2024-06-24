@@ -1,23 +1,28 @@
 import { getConnection } from '@firestone-hs/aws-lambda-utils';
-import { CommunityOverview } from '../model';
+import { retrieveCommunityInfoForOutput } from '../cron/internal/community';
+import { CommunityInfo, CommunityOverview } from '../model';
 
 export const retrieveCommunitiesOverview = async (
 	communityIds: readonly string[],
-): Promise<readonly CommunityOverview[]> => {
+): Promise<readonly (CommunityOverview | CommunityInfo)[]> => {
 	const mysql = await getConnection();
 	const communityInfoQuery = `
         SELECT * FROM communities WHERE communityId IN (?)
     `;
 	const communityInfoResult: readonly any[] = await mysql.query(communityInfoQuery, [communityIds]);
 	mysql.end();
-	return communityInfoResult.map((communityInfo) => {
-		const result: CommunityOverview = {
-			id: communityInfo.communityId,
-			name: communityInfo.name,
-			description: communityInfo.description,
-		};
-		return result;
-	});
+
+	return await Promise.all(
+		communityInfoResult.map(async (dbInfo) => {
+			const communityInfo = await retrieveCommunityInfoForOutput(dbInfo.communityId);
+			const result: CommunityInfo = {
+				...(communityInfo ?? ({} as CommunityInfo)),
+				id: communityInfo?.id ?? dbInfo.communityId,
+				name: communityInfo?.name ?? dbInfo.name,
+			};
+			return result;
+		}),
+	);
 };
 
 export const retrieveJoinedCommunities = async (userName: string): Promise<readonly CommunityOverview[]> => {
@@ -26,7 +31,9 @@ export const retrieveJoinedCommunities = async (userName: string): Promise<reado
     `;
 	const mysql = await getConnection();
 	const result: any[] = await mysql.query(query, [userName]);
+	console.log('retrieved communities', result);
 	mysql.end();
 	const joinedCommunityIds = result.map((r) => r.communityId);
+	console.debug('got comunities for', userName, joinedCommunityIds);
 	return retrieveCommunitiesOverview(joinedCommunityIds);
 };
