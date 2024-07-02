@@ -93,9 +93,8 @@ Resources:
             Tags:
                 LambdaName: cron-communities-process-recent-games
             Events:
-                # Populate the info on the last hour
                 LastPeriodTrigger:
                     Type: Schedule
                     Properties:
-                        # Cron that runs every 10 minutes
+                        # Cron that runs every 5 minutes
                         Schedule: cron(0/5 * * * ? *)

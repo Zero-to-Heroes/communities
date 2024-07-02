@@ -1,6 +1,7 @@
 import { S3 } from '@firestone-hs/aws-lambda-utils';
 import { CommunityInfo } from 'src/model';
 import { InternalCommunityInfo } from './communities';
+import { updateArenaCommunityInfo } from './modes/arena';
 import { updateBattlegroundsCommunityInfo } from './modes/battlegrounds';
 import { updateConstructedCommunityInfo } from './modes/constructed';
 import { InternalReplaySummaryDbRow } from './replay-summary';
@@ -34,6 +35,10 @@ export const updateCommunity = async (
 		existingCommunityInfo.battlegroundsDuoInfo,
 		games.filter((game) => game.gameMode === 'battlegrounds-duo'),
 	);
+	existingCommunityInfo.arenaInfo = updateArenaCommunityInfo(
+		existingCommunityInfo.arenaInfo,
+		games.filter((game) => game.gameMode === 'arena'),
+	);
 
 	await saveCommunityInfo(existingCommunityInfo);
 };
@@ -59,7 +64,7 @@ export const updateGamesPerHour = (
 ): { [hour: string]: number } => {
 	const result = { ...gamesPerHour };
 	for (const game of games) {
-		const dateWithHours = new Date(game.creationDate).toISOString().substring(0, 13);
+		const dateWithHours = new Date(game.creationDate).toISOString().substring(0, 13) + ':00:00.000Z';
 		result[dateWithHours] = (result[dateWithHours] ?? 0) + 1;
 	}
 	return result;
@@ -81,6 +86,7 @@ const sanitizeForOutput = (community: CommunityInfo): CommunityInfo => {
 	result.twistInfo.leaderboard = result.twistInfo.leaderboard.slice(0, 10);
 	result.battlegroundsInfo.leaderboard = result.battlegroundsInfo.leaderboard.slice(0, 10);
 	result.battlegroundsDuoInfo.leaderboard = result.battlegroundsDuoInfo.leaderboard.slice(0, 10);
+	result.arenaInfo.leaderboard = result.arenaInfo.leaderboard.slice(0, 10);
 
 	result.gamesInLastSevenDays =
 		(result.standardInfo?.gamesInLastSevenDays ?? 0) +

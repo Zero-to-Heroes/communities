@@ -1,14 +1,20 @@
 import { CommunityInfoBattlegrounds, CommunityInfoConstructed } from '../../../model';
 import { countGamesInLastSevenDays, updateGamesPerHour } from '../community';
 import { InternalReplaySummaryDbRow } from '../replay-summary';
-import { updateLeaderboard } from './leaderboard';
+import { buildLeaderboardEntryForPlayer, updateLeaderboard } from './leaderboard';
 
 export const updateBattlegroundsCommunityInfo = (
 	communityInfo: CommunityInfoBattlegrounds,
 	games: readonly InternalReplaySummaryDbRow[],
 ): CommunityInfoConstructed => {
 	const result = communityInfo ?? ({} as CommunityInfoBattlegrounds);
-	result.leaderboard = updateLeaderboard(result?.leaderboard ?? [], games, leaderboardComparator, rankConverter);
+	result.leaderboard = updateLeaderboard(
+		result?.leaderboard ?? [],
+		games,
+		leaderboardComparator,
+		rankConverter,
+		buildLeaderboardEntryForPlayer,
+	);
 	result.gamesPerHour = updateGamesPerHour(result.gamesPerHour ?? {}, games);
 	result.gamesInLastSevenDays = countGamesInLastSevenDays(result.gamesPerHour);
 	return result;

@@ -50,13 +50,15 @@ export interface CommunityInfoConstructed extends CommunityInfoGameMode {}
 
 export interface CommunityInfoBattlegrounds extends CommunityInfoGameMode {}
 
-export interface CommunityInfoArena extends CommunityInfoGameMode {}
+export interface CommunityInfoArena extends CommunityInfoGameMode {
+	leaderboard: readonly LeaderboardEntryArena[];
+}
 
 export interface GameInfo {
 	playerClass: string;
 	opponentClass: string;
 	result: 'won' | 'lost' | 'tied';
-	additionalResult: string;
+	// additionalResult: string;
 	playerRank: string;
 }
 
@@ -65,4 +67,9 @@ export interface LeaderboardEntry {
 	displayName: string;
 	currentRank: string;
 	bestRank: string;
+}
+
+export interface LeaderboardEntryArena extends LeaderboardEntry {
+	// Number of wins for a run, grouped by day
+	runsPerDay: { [day: string]: readonly number[] };
 }
