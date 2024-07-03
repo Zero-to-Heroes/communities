@@ -1,5 +1,5 @@
 import { getConnection } from '@firestone-hs/aws-lambda-utils';
-import { retrieveCommunityInfo, saveCommunityInfo } from '../cron/internal/community';
+import { retrieveCommunityInfo, sanitizeForOutput, saveCommunityInfo } from '../cron/internal/community';
 import { CommunityInfo, JoinCommunityInput } from '../model';
 
 export default async (event): Promise<any> => {
@@ -69,5 +69,5 @@ const performJoin = async (userName: string, code: string): Promise<CommunityInf
 	members.push(userName);
 	communityInfo.members = [...new Set(members)];
 	await saveCommunityInfo(communityInfo);
-	return communityInfo;
+	return sanitizeForOutput(communityInfo);
 };

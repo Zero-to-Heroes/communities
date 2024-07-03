@@ -7,6 +7,10 @@ export interface JoinCommunityInput extends UserInfoInput {
 	code: string;
 }
 
+export interface LeaveCommunityInput extends UserInfoInput {
+	communityId: string;
+}
+
 export interface CreateCommunityInput {
 	userName: string;
 	name: string;
@@ -27,6 +31,7 @@ export interface CommunityOverview {
 export interface CommunityInfo extends CommunityOverview {
 	numberOfMembers: number;
 	members: string[];
+	memberBattleTags: string[];
 	standardInfo: CommunityInfoConstructed;
 	wildInfo: CommunityInfoConstructed;
 	twistInfo: CommunityInfoConstructed;

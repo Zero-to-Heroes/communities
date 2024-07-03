@@ -78,15 +78,16 @@ export const countGamesInLastSevenDays = (gamesPerHour: { [hour: string]: number
 		.reduce((acc, hour) => acc + gamesPerHour[hour], 0);
 };
 
-const sanitizeForOutput = (community: CommunityInfo): CommunityInfo => {
+const LEADERBOARD_ENTRIES = 50;
+export const sanitizeForOutput = (community: CommunityInfo): CommunityInfo => {
 	const result = { ...community };
 	result.numberOfMembers = [...new Set(result.members)].length;
-	result.standardInfo.leaderboard = result.standardInfo.leaderboard.slice(0, 10);
-	result.wildInfo.leaderboard = result.wildInfo.leaderboard.slice(0, 10);
-	result.twistInfo.leaderboard = result.twistInfo.leaderboard.slice(0, 10);
-	result.battlegroundsInfo.leaderboard = result.battlegroundsInfo.leaderboard.slice(0, 10);
-	result.battlegroundsDuoInfo.leaderboard = result.battlegroundsDuoInfo.leaderboard.slice(0, 10);
-	result.arenaInfo.leaderboard = result.arenaInfo.leaderboard.slice(0, 10);
+	result.standardInfo.leaderboard = result.standardInfo.leaderboard.slice(0, LEADERBOARD_ENTRIES);
+	result.wildInfo.leaderboard = result.wildInfo.leaderboard.slice(0, LEADERBOARD_ENTRIES);
+	result.twistInfo.leaderboard = result.twistInfo.leaderboard.slice(0, LEADERBOARD_ENTRIES);
+	result.battlegroundsInfo.leaderboard = result.battlegroundsInfo.leaderboard.slice(0, LEADERBOARD_ENTRIES);
+	result.battlegroundsDuoInfo.leaderboard = result.battlegroundsDuoInfo.leaderboard.slice(0, LEADERBOARD_ENTRIES);
+	result.arenaInfo.leaderboard = result.arenaInfo.leaderboard.slice(0, LEADERBOARD_ENTRIES);
 
 	result.gamesInLastSevenDays =
 		(result.standardInfo?.gamesInLastSevenDays ?? 0) +
