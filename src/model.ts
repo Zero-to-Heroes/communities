@@ -12,9 +12,10 @@ export interface LeaveCommunityInput extends UserInfoInput {
 }
 
 export interface CreateCommunityInput {
-	userName: string;
+	adminUserName: string;
 	name: string;
 	description: string;
+	joinCode: string;
 }
 
 export interface RetrieveCommunityInput {
