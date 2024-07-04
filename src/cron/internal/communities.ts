@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-boolean-cast */
 import { getConnectionReadOnly, groupByFunction } from '@firestone-hs/aws-lambda-utils';
 import { updateCommunity } from './community';
 import { InternalReplaySummaryDbRow } from './replay-summary';
@@ -8,9 +9,11 @@ export const updateCommunities = async (
 ): Promise<void> => {
 	for (const communityInfo of communityInfos) {
 		const gamesForCommunity = games.filter((game) => communityInfo.userNames.includes(game.userName));
-		console.log('got games for community', gamesForCommunity?.length, communityInfo.communityId);
-		await updateCommunity(communityInfo, gamesForCommunity);
-		console.log('updated community', communityInfo.communityId);
+		if (!!gamesForCommunity?.length) {
+			console.log('got games for community', gamesForCommunity?.length, communityInfo.communityId);
+			await updateCommunity(communityInfo, gamesForCommunity);
+			console.log('updated community');
+		}
 	}
 };
 

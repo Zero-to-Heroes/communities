@@ -22,7 +22,7 @@ export default async (event): Promise<any> => {
 
 	console.debug('received event', event);
 	const input: JoinCommunityInput = JSON.parse(event.body);
-	const community = await performJoin(input.userName, input.code);
+	const community = await performJoin(input.userName?.trim(), input.code?.trim());
 	console.debug('joinResult', community, input);
 	if (!community) {
 		const response = {
@@ -32,11 +32,6 @@ export default async (event): Promise<any> => {
 		};
 		return response;
 	}
-
-	// Now retrieve the community info
-	// const communityOverviews = await retrieveCommunitiesOverview([input.code]);
-	// const community = communityOverviews?.[0];
-	// console.debug('community', community, communityOverviews);
 
 	return {
 		statusCode: 200,

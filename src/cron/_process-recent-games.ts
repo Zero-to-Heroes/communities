@@ -18,11 +18,11 @@ export default async (event, context: Context): Promise<any> => {
 	}
 
 	const communityInfos = await getUsersInCommunities();
-	console.log('got users', communityInfos?.length, communityInfos);
+	// console.log('got users', communityInfos?.length, communityInfos);
 	const { games, newLastProcessedId } = await getRecentGames(lastProcessedId, communityInfos);
-	console.log('got games', games?.length, newLastProcessedId);
+	// console.log('got games', games?.length, newLastProcessedId);
 	await updateCommunities(games, communityInfos);
-	console.log('updated communities');
+	// console.log('updated communities');
 	await updateLastProcessedId(newLastProcessedId);
 	console.log('updated last processed id');
 

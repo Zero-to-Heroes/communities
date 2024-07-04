@@ -8,11 +8,11 @@ export const getRecentGames = async (
 	const uniqueUserNames = communityInfos
 		.flatMap((info) => info.userNames)
 		.filter((value, index, self) => self.indexOf(value) === index);
-	console.log(
-		'uniqueUserNames',
-		uniqueUserNames,
-		communityInfos.flatMap((info) => info.userNames),
-	);
+	// console.log(
+	// 	'uniqueUserNames',
+	// 	uniqueUserNames,
+	// 	communityInfos.flatMap((info) => info.userNames),
+	// );
 	const mysql = await getConnectionReadOnly();
 	const query = `
 		SELECT * FROM replay_summary

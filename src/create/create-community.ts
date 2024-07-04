@@ -25,10 +25,10 @@ export default async (event): Promise<any> => {
 	console.debug('received event', event);
 	// const input: CreateCommunityInput = JSON.parse(event.body);
 	const input: CreateCommunityInput = {
-		adminUserName: 'ruphi22',
-		description: `For all Bunnyhoppor fans and aspiring Hearthstone detectives`,
-		name: `Bunny's guild`,
-		joinCode: 'hopporholmes',
+		adminUserName: '',
+		description: `Sometimes full of salt, sometimes very calm and collected, the Salt Mines are a very fun place to be and we need your help! Join RduLive and his fellow members and embark on a journey of battlegrounds!`,
+		name: `Rdu's Salt Mine`,
+		joinCode: '',
 	};
 	const communityId = await createCommunityInDb(input);
 	if (!communityId) {
