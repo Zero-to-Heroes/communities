@@ -1,4 +1,4 @@
-import { retrieveCommunityInfoForOutput } from '../cron/internal/community';
+import { retrieveCommunityInfo, sanitizeForOutput } from '../cron/internal/community';
 import { RetrieveCommunityInput } from '../model';
 
 export default async (event): Promise<any> => {
@@ -20,8 +20,9 @@ export default async (event): Promise<any> => {
 	}
 	console.debug('received event', event);
 	const input: RetrieveCommunityInput = JSON.parse(event.body);
-	const communityInfo = await retrieveCommunityInfoForOutput(input.communityId);
+	const communityInfo = await retrieveCommunityInfo(input.communityId);
 	if (!input.userName?.length || !communityInfo?.members?.includes(input.userName)) {
+		console.debug('user not part of community', input.userName, communityInfo?.members, communityInfo);
 		return {
 			statusCode: 403,
 			headers: headers,
@@ -29,9 +30,10 @@ export default async (event): Promise<any> => {
 		};
 	}
 
+	const sanitized = sanitizeForOutput(communityInfo);
 	return {
 		statusCode: 200,
 		headers: headers,
-		body: JSON.stringify(communityInfo),
+		body: JSON.stringify(sanitized),
 	};
 };

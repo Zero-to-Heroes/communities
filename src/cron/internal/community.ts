@@ -40,6 +40,8 @@ export const updateCommunity = async (
 		games.filter((game) => game.gameMode === 'arena'),
 	);
 
+	existingCommunityInfo.members = existingCommunityInfo.members.filter((m) => !!m?.length);
+
 	await saveCommunityInfo(existingCommunityInfo);
 };
 

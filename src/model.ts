@@ -5,6 +5,8 @@ export interface UserInfoInput {
 
 export interface JoinCommunityInput extends UserInfoInput {
 	code: string;
+	// Optional for now, will become mandatory once everyone has migrated
+	communityId?: string;
 }
 
 export interface LeaveCommunityInput extends UserInfoInput {

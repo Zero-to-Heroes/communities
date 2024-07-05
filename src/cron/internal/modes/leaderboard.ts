@@ -29,6 +29,7 @@ export const updateLeaderboard = <T extends LeaderboardEntry>(
 				rankComparator,
 			),
 		)
+		.filter((info) => !!info.currentRank)
 		.sort((a, b) => rankConverter(b.currentRank) - rankConverter(a.currentRank));
 
 	return leaderboard;
