@@ -34,8 +34,11 @@ const buildLeaderboardEntryForPlayer = (
 			const [wins, losses] = game.playerRank.split('-').map((elt) => parseInt(elt));
 			return (wins === 11 && game.result === 'won') || (losses === 2 && game.result === 'lost');
 		});
-	console.debug('updating arena entry for player', userName, gamesForPlayer.length, endOfRunGames.length);
+	if (!endOfRunGames.length) {
+		return existingInfo;
+	}
 
+	console.debug('updating arena entry for player', userName, gamesForPlayer.length, endOfRunGames.length);
 	const day = new Date().toISOString().slice(0, 10);
 	const existingRunsPerDay: {
 		[day: string]: readonly number[];
