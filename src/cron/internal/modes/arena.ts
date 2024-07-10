@@ -86,5 +86,5 @@ const leaderboardComparator = (a: string, b: string): number => {
 
 // The higher, the better
 const rankConverter = (rank: string): number => {
-	return parseInt(rank);
+	return parseFloat(rank);
 };

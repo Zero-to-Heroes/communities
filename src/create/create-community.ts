@@ -73,6 +73,7 @@ const createCommunityInDb = async (input: CreateCommunityInput): Promise<string>
 
 const createCommunityInfoInS3 = async (communityId: string, input: CreateCommunityInput): Promise<CommunityInfo> => {
 	const communityInfo: CommunityInfo = {
+		adminUserName: input.adminUserName,
 		id: communityId,
 		name: input.name,
 		description: input.description,

@@ -20,6 +20,12 @@ export interface CreateCommunityInput {
 	joinCode: string;
 }
 
+export interface UpdateCommunityInput {
+	communityId: string;
+	userName: string;
+	defaultTab?: string;
+}
+
 export interface RetrieveCommunityInput {
 	userName: string;
 	communityId: string;
@@ -32,6 +38,7 @@ export interface CommunityOverview {
 }
 
 export interface CommunityInfo extends CommunityOverview {
+	adminUserName: string;
 	numberOfMembers: number;
 	members: string[];
 	memberBattleTags: string[];
@@ -45,6 +52,8 @@ export interface CommunityInfo extends CommunityOverview {
 	totalGamesPlayed: number;
 	totalTimePlayed: number;
 	gamesInLastSevenDays?: number;
+
+	defaultTab?: string;
 }
 
 export interface CommunityInfoGameMode {
