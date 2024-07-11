@@ -22,6 +22,7 @@ export default async (event): Promise<any> => {
 
 	console.debug('received event', event);
 	const input: JoinCommunityInput = JSON.parse(event.body);
+	console.debug('input', input);
 	if (!input.userName || !input.code) {
 		console.log('missing required data');
 		return {
@@ -42,10 +43,11 @@ export default async (event): Promise<any> => {
 		return response;
 	}
 
+	const result = sanitizeForOutput(community);
 	return {
 		statusCode: 200,
 		headers: headers,
-		body: JSON.stringify(community),
+		body: JSON.stringify(result),
 	};
 };
 
@@ -63,6 +65,7 @@ const performJoin = async (
 		`;
 		const result = await mysql.query(communityIdQuery, [code]);
 		communityId = result[0]?.communityId;
+		console.debug('joining community', communityId);
 		if (!communityId) {
 			mysql.end();
 			console.warn('Could not find community with code', code);
@@ -90,9 +93,11 @@ const performJoin = async (
 	console.debug('joinResult', joinResult);
 	mysql.end();
 	const communityInfo: CommunityInfo = await retrieveCommunityInfo(communityId);
+	console.debug('retrieved community', communityInfo);
 	const members = communityInfo.members || [];
 	members.push(userName);
 	communityInfo.members = [...new Set(members)];
+	console.debug('new members', communityInfo.members, userName);
 	await saveCommunityInfo(communityInfo);
-	return sanitizeForOutput(communityInfo);
+	return communityInfo;
 };

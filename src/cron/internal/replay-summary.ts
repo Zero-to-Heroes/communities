@@ -17,7 +17,7 @@ export const getRecentGames = async (
 	const query = `
 		SELECT * FROM replay_summary
 		WHERE id > ?
-		AND gameMode IN ('ranked', 'battlegrounds', 'battlegrounds-duo', 'arena')
+		AND gameMode IN ('ranked', 'battlegrounds', 'battlegrounds-duo', 'arena', 'friendly')
 		AND userName IS NOT NULL
 	`;
 	const games: readonly InternalReplaySummaryDbRow[] = await mysql.query(query, [lastProcessedId]);
@@ -28,11 +28,13 @@ export const getRecentGames = async (
 
 export interface InternalReplaySummaryDbRow {
 	readonly id: number;
+	readonly uniqueGameId: string;
 	readonly creationDate: string;
 	readonly userName: string;
 	readonly playerName: string;
 	readonly playerRank: string;
 	readonly newPlayerRank: string;
+	readonly playerCardId: string;
 	readonly result: 'won' | 'lost' | 'tied';
 	readonly gameMode: 'ranked' | 'battlegrounds' | 'battlegrounds-duo' | 'arena';
 	readonly gameFormat: 'standard' | 'wild' | 'twist';

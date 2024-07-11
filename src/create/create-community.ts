@@ -113,6 +113,10 @@ const createCommunityInfoInS3 = async (communityId: string, input: CreateCommuni
 			gamesPerHour: {},
 			gamesInLastSevenDays: 0,
 		},
+		friendlyBattles: {
+			battles: [],
+			battlesPerDay: {},
+		},
 	};
 	await saveCommunityInfo(communityInfo);
 	return sanitizeForOutput(communityInfo);

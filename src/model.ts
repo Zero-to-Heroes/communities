@@ -48,6 +48,7 @@ export interface CommunityInfo extends CommunityOverview {
 	battlegroundsInfo: CommunityInfoBattlegrounds;
 	battlegroundsDuoInfo: CommunityInfoBattlegrounds;
 	arenaInfo: CommunityInfoArena;
+	friendlyBattles: CommunityFriendlyBattles;
 
 	totalGamesPlayed: number;
 	totalTimePlayed: number;
@@ -89,4 +90,22 @@ export interface LeaderboardEntry {
 export interface LeaderboardEntryArena extends LeaderboardEntry {
 	// Number of wins for a run, grouped by day
 	runsPerDay: { [day: string]: readonly number[] };
+}
+
+export interface CommunityFriendlyBattles {
+	battles: readonly FriendlyBattle[];
+	battlesPerDay: { [day: string]: readonly FriendlyBattle[] };
+}
+
+export interface FriendlyBattle {
+	readonly gameMode: string;
+	readonly players: readonly FriendlyBattlePlayer[];
+	readonly winnerIndex: number | 'tie';
+	readonly creationDate: Date;
+}
+
+export interface FriendlyBattlePlayer {
+	readonly name: string;
+	readonly heroCardId: string;
+	readonly rank: string;
 }

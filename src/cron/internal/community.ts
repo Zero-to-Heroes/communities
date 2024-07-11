@@ -1,6 +1,7 @@
 import { S3 } from '@firestone-hs/aws-lambda-utils';
 import { CommunityInfo } from 'src/model';
 import { InternalCommunityInfo } from './communities';
+import { updateFriendlyBattles } from './friendly-battles';
 import { updateArenaCommunityInfo } from './modes/arena';
 import { updateBattlegroundsCommunityInfo } from './modes/battlegrounds';
 import { updateConstructedCommunityInfo } from './modes/constructed';
@@ -39,6 +40,7 @@ export const updateCommunity = async (
 		existingCommunityInfo.arenaInfo,
 		games.filter((game) => game.gameMode === 'arena'),
 	);
+	existingCommunityInfo.friendlyBattles = updateFriendlyBattles(existingCommunityInfo.friendlyBattles, games);
 
 	existingCommunityInfo.members = existingCommunityInfo.members.filter((m) => !!m?.length);
 
@@ -99,6 +101,12 @@ export const sanitizeForOutput = (community: CommunityInfo): CommunityInfo => {
 		(result.battlegroundsDuoInfo?.gamesInLastSevenDays ?? 0) +
 		(result.arenaInfo?.gamesInLastSevenDays ?? 0);
 
+	result.friendlyBattles = result.friendlyBattles || { battlesPerDay: {}, battles: [] };
+	const updatedFriendlyBattles = Object.values(result.friendlyBattles.battlesPerDay)
+		.flatMap((battles) => battles)
+		.sort((a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime());
+	result.friendlyBattles.battles = updatedFriendlyBattles;
+
 	delete result.members;
 	delete result.standardInfo?.gamesPerHour;
 	delete result.wildInfo?.gamesPerHour;
@@ -106,6 +114,7 @@ export const sanitizeForOutput = (community: CommunityInfo): CommunityInfo => {
 	delete result.battlegroundsInfo?.gamesPerHour;
 	delete result.battlegroundsDuoInfo?.gamesPerHour;
 	delete result.arenaInfo?.gamesPerHour;
+	delete result.friendlyBattles?.battlesPerDay;
 
 	return result;
 };
