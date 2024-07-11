@@ -46,6 +46,7 @@ const performLeave = async (userName: string, communityId: string): Promise<bool
 	`;
 	const mysql = await getConnection();
 	const result = await mysql.query(communityIdQuery, [userName, communityId]);
+	await mysql.end();
 
 	const communityInfo: CommunityInfo = await retrieveCommunityInfo(communityId);
 	if (!communityInfo) {
