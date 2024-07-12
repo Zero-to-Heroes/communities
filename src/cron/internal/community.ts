@@ -40,7 +40,10 @@ export const updateCommunity = async (
 		existingCommunityInfo.arenaInfo,
 		games.filter((game) => game.gameMode === 'arena'),
 	);
-	existingCommunityInfo.friendlyBattles = updateFriendlyBattles(existingCommunityInfo.friendlyBattles, games);
+	existingCommunityInfo.friendlyBattles = updateFriendlyBattles(
+		existingCommunityInfo.friendlyBattles,
+		games.filter((game) => game.gameMode === 'friendly').filter((game) => game.allowGameShare),
+	);
 
 	existingCommunityInfo.members = existingCommunityInfo.members.filter((m) => !!m?.length);
 

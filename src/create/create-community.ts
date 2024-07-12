@@ -25,10 +25,10 @@ export default async (event): Promise<any> => {
 	console.debug('received event', event);
 	// const input: CreateCommunityInput = JSON.parse(event.body);
 	const input: CreateCommunityInput = {
-		adminUserName: 'doseofcoffeestream',
-		description: `Easily the best guild around.`,
-		name: `The Roastery`,
-		joinCode: 'DoC',
+		adminUserName: ' ',
+		description: ``,
+		name: ``,
+		joinCode: '',
 	};
 	const communityId = await createCommunityInDb(input);
 	if (!communityId) {

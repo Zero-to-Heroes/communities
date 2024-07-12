@@ -99,6 +99,7 @@ export interface CommunityFriendlyBattles {
 
 export interface FriendlyBattle {
 	readonly gameMode: string;
+	readonly gameFormat: string;
 	readonly players: readonly FriendlyBattlePlayer[];
 	readonly winnerIndex: number | 'tie';
 	readonly creationDate: Date;

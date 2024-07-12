@@ -5,6 +5,11 @@ import { CommunityInfo, CommunityOverview } from '../model';
 export const retrieveCommunitiesOverview = async (
 	communityIds: readonly string[],
 ): Promise<readonly (CommunityOverview | CommunityInfo)[]> => {
+	if (!communityIds?.length) {
+		console.warn('no community ids', communityIds);
+		return [];
+	}
+
 	const mysql = await getConnection();
 	const communityInfoQuery = `
         SELECT * FROM communities WHERE communityId IN (?)
@@ -33,7 +38,7 @@ export const retrieveJoinedCommunities = async (userName: string): Promise<reado
 	const result: any[] = await mysql.query(query, [userName]);
 	console.log('retrieved communities', result);
 	mysql.end();
-	const joinedCommunityIds = result.map((r) => r.communityId);
+	const joinedCommunityIds = result.map((r) => r.communityId).filter((id) => !!id);
 	console.debug('got comunities for', userName, joinedCommunityIds);
 	return retrieveCommunitiesOverview(joinedCommunityIds);
 };

@@ -33,6 +33,7 @@ const buildFriendlyBattle = (games: readonly InternalReplaySummaryDbRow[]): Frie
 	const result: FriendlyBattle = {
 		creationDate: new Date(refGame.creationDate),
 		gameMode: refGame.gameMode,
+		gameFormat: refGame.gameFormat,
 		players: players,
 		winnerIndex: games.findIndex((game) => game.result === 'won') ?? 'tie',
 	};
