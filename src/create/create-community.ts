@@ -25,10 +25,11 @@ export default async (event): Promise<any> => {
 	console.debug('received event', event);
 	// const input: CreateCommunityInput = JSON.parse(event.body);
 	const input: CreateCommunityInput = {
-		adminUserName: ' ',
-		description: ``,
+		adminUserName: '',
 		name: ``,
+		description: ``,
 		joinCode: '',
+		defaultTab: '',
 	};
 	const communityId = await createCommunityInDb(input);
 	if (!communityId) {
@@ -83,6 +84,7 @@ const createCommunityInfoInS3 = async (communityId: string, input: CreateCommuni
 		totalGamesPlayed: 0,
 		totalTimePlayed: 0,
 		gamesInLastSevenDays: 0,
+		defaultTab: input.defaultTab,
 		arenaInfo: {
 			leaderboard: [],
 			gamesPerHour: {},

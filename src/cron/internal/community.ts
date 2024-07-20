@@ -85,7 +85,7 @@ export const countGamesInLastSevenDays = (gamesPerHour: { [hour: string]: number
 		.reduce((acc, hour) => acc + gamesPerHour[hour], 0);
 };
 
-const LEADERBOARD_ENTRIES = 50;
+const LEADERBOARD_ENTRIES = 200;
 export const sanitizeForOutput = (community: CommunityInfo): CommunityInfo => {
 	const result = { ...community };
 	result.numberOfMembers = [...new Set(result.members)].length;

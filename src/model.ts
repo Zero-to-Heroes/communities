@@ -18,6 +18,7 @@ export interface CreateCommunityInput {
 	name: string;
 	description: string;
 	joinCode: string;
+	defaultTab?: string;
 }
 
 export interface UpdateCommunityInput {
