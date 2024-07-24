@@ -24,6 +24,7 @@
 		"@firestone-hs/reference-data": "^1.0.1",
 		"aws-sdk": "^2.1040.0",
 		"mysql": "^2.18.1",
+		"openskill": "^4.0.3",
 		"serverless-mysql": "^1.5.4",
 		"sqlstring": "^2.3.2"
 	},

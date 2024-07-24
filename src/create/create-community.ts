@@ -89,35 +89,42 @@ const createCommunityInfoInS3 = async (communityId: string, input: CreateCommuni
 			leaderboard: [],
 			gamesPerHour: {},
 			gamesInLastSevenDays: 0,
+			openSkill: { ratings: {} },
 		},
 		standardInfo: {
 			leaderboard: [],
 			gamesPerHour: {},
 			gamesInLastSevenDays: 0,
+			openSkill: { ratings: {} },
 		},
 		wildInfo: {
 			leaderboard: [],
 			gamesPerHour: {},
 			gamesInLastSevenDays: 0,
+			openSkill: { ratings: {} },
 		},
 		twistInfo: {
 			leaderboard: [],
 			gamesPerHour: {},
 			gamesInLastSevenDays: 0,
+			openSkill: { ratings: {} },
 		},
 		battlegroundsInfo: {
 			leaderboard: [],
 			gamesPerHour: {},
 			gamesInLastSevenDays: 0,
+			openSkill: { ratings: {} },
 		},
 		battlegroundsDuoInfo: {
 			leaderboard: [],
 			gamesPerHour: {},
 			gamesInLastSevenDays: 0,
+			openSkill: { ratings: {} },
 		},
 		friendlyBattles: {
 			battles: [],
 			battlesPerDay: {},
+			openSkill: { ratings: {} },
 		},
 	};
 	await saveCommunityInfo(communityInfo);

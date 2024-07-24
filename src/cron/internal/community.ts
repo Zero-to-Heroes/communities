@@ -1,5 +1,5 @@
 import { S3 } from '@firestone-hs/aws-lambda-utils';
-import { CommunityInfo } from 'src/model';
+import { CommunityInfo, GlobalOpenSkill, OpenSkill } from 'src/model';
 import { InternalCommunityInfo } from './communities';
 import { updateFriendlyBattles } from './friendly-battles';
 import { updateArenaCommunityInfo } from './modes/arena';
@@ -12,6 +12,7 @@ const s3 = new S3();
 export const updateCommunity = async (
 	communityInfo: InternalCommunityInfo,
 	games: readonly InternalReplaySummaryDbRow[],
+	globalOpenSkill: GlobalOpenSkill,
 ): Promise<void> => {
 	const existingCommunityInfo: CommunityInfo = await retrieveCommunityInfo(communityInfo.communityId);
 	// Update the leaderboards
@@ -43,6 +44,7 @@ export const updateCommunity = async (
 	existingCommunityInfo.friendlyBattles = updateFriendlyBattles(
 		existingCommunityInfo.friendlyBattles,
 		games.filter((game) => game.gameMode === 'friendly').filter((game) => game.allowGameShare),
+		globalOpenSkill,
 	);
 
 	existingCommunityInfo.members = existingCommunityInfo.members.filter((m) => !!m?.length);
@@ -104,7 +106,7 @@ export const sanitizeForOutput = (community: CommunityInfo): CommunityInfo => {
 		(result.battlegroundsDuoInfo?.gamesInLastSevenDays ?? 0) +
 		(result.arenaInfo?.gamesInLastSevenDays ?? 0);
 
-	result.friendlyBattles = result.friendlyBattles || { battlesPerDay: {}, battles: [] };
+	result.friendlyBattles = result.friendlyBattles || { battlesPerDay: {}, battles: [], openSkill: {} as OpenSkill };
 	const updatedFriendlyBattles = Object.values(result.friendlyBattles.battlesPerDay)
 		.flatMap((battles) => battles)
 		.sort((a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime());

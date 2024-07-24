@@ -35,6 +35,7 @@ export interface InternalReplaySummaryDbRow {
 	readonly playerRank: string;
 	readonly newPlayerRank: string;
 	readonly playerCardId: string;
+	readonly opponentName: string;
 	readonly result: 'won' | 'lost' | 'tied';
 	readonly gameMode: 'ranked' | 'battlegrounds' | 'battlegrounds-duo' | 'arena' | 'friendly';
 	readonly gameFormat: 'standard' | 'wild' | 'twist';

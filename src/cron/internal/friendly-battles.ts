@@ -1,15 +1,19 @@
 import { groupByFunction } from '@firestone-hs/aws-lambda-utils';
-import { CommunityFriendlyBattles, FriendlyBattle, FriendlyBattlePlayer } from '../../model';
+import { CommunityFriendlyBattles, FriendlyBattle, FriendlyBattlePlayer, GlobalOpenSkill } from '../../model';
+import { buildNewOpenSkill } from './open-skill';
 import { InternalReplaySummaryDbRow } from './replay-summary';
 
 export const updateFriendlyBattles = (
 	friendlyBattles: CommunityFriendlyBattles,
 	games: readonly InternalReplaySummaryDbRow[],
+	globalOpenSill: GlobalOpenSkill,
 ): CommunityFriendlyBattles => {
 	const groupedByGameId = groupByFunction((game: InternalReplaySummaryDbRow) => game.uniqueGameId)(games);
-	const newFriendlyBattles: readonly FriendlyBattle[] = Object.keys(groupedByGameId)
-		.filter((gameId) => groupedByGameId[gameId].length > 1)
-		.map((gameId) => buildFriendlyBattle(groupedByGameId[gameId]));
+	const friendlyGameIds = Object.keys(groupedByGameId).filter((gameId) => groupedByGameId[gameId].length > 1);
+	const friendlyGames = friendlyGameIds.map((gameId) => groupedByGameId[gameId][0]);
+	const newFriendlyBattles: readonly FriendlyBattle[] = friendlyGameIds.map((gameId) =>
+		buildFriendlyBattle(groupedByGameId[gameId]),
+	);
 	console.debug('newFriendlyBattles', newFriendlyBattles);
 	if (newFriendlyBattles.length === 0) {
 		return friendlyBattles;
@@ -20,9 +24,11 @@ export const updateFriendlyBattles = (
 	const existingBattlesForDay: readonly FriendlyBattle[] = newBattlesPerDay[day] ?? [];
 	newBattlesPerDay[day] = [...existingBattlesForDay, ...newFriendlyBattles];
 
+	const newOpenSkill = buildNewOpenSkill(friendlyBattles.openSkill, friendlyGames);
 	const result: CommunityFriendlyBattles = {
 		battlesPerDay: newBattlesPerDay,
 		battles: [],
+		openSkill: newOpenSkill,
 	};
 	return result;
 };

@@ -143,8 +143,8 @@ Resources:
             Runtime: nodejs18.x
             Timeout: 880
             CodeUri: ./dist/cron/_process-recent-games
-            MemorySize: 2000
-            ReservedConcurrentExecutions: 10
+            MemorySize: 4000
+            ReservedConcurrentExecutions: 1
             # Layers:
             #     - !Sub "arn:aws:lambda:${AWS::Region}:580247275435:layer:LambdaInsightsExtension:14"
             Policies:

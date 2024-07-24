@@ -27,7 +27,7 @@ export default async (event): Promise<any> => {
 	const input: UpdateCommunityInput = {
 		communityId: '',
 		userName: '',
-		defaultTab: 'arena',
+		description: '',
 	};
 
 	const communityInfo = await retrieveCommunityInfo(input.communityId);
@@ -53,6 +53,9 @@ export default async (event): Promise<any> => {
 	newCommunityInfo.adminUserName = input.userName;
 	if (input.defaultTab) {
 		newCommunityInfo.defaultTab = input.defaultTab;
+	}
+	if (input.description) {
+		newCommunityInfo.description = input.description;
 	}
 	await saveCommunityInfo(newCommunityInfo);
 

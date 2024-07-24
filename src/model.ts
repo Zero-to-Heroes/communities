@@ -25,6 +25,7 @@ export interface UpdateCommunityInput {
 	communityId: string;
 	userName: string;
 	defaultTab?: string;
+	description?: string;
 }
 
 export interface RetrieveCommunityInput {
@@ -62,6 +63,7 @@ export interface CommunityInfoGameMode {
 	leaderboard: readonly LeaderboardEntry[];
 	gamesPerHour: { [hour: string]: number };
 	gamesInLastSevenDays?: number;
+	openSkill: OpenSkill;
 	// lastGames: readonly GameInfo[];
 }
 
@@ -96,6 +98,7 @@ export interface LeaderboardEntryArena extends LeaderboardEntry {
 export interface CommunityFriendlyBattles {
 	battles: readonly FriendlyBattle[];
 	battlesPerDay: { [day: string]: readonly FriendlyBattle[] };
+	openSkill: OpenSkill;
 }
 
 export interface FriendlyBattle {
@@ -110,4 +113,23 @@ export interface FriendlyBattlePlayer {
 	readonly name: string;
 	readonly heroCardId: string;
 	readonly rank: string;
+}
+
+export interface GlobalOpenSkill {
+	readonly standard: OpenSkill;
+	readonly wild: OpenSkill;
+	readonly battlegrounds: OpenSkill;
+	readonly battlegroundsDuo: OpenSkill;
+	readonly arena: OpenSkill;
+}
+
+export interface OpenSkill {
+	readonly ratings: { [battleTag: string]: OpenSkillRating };
+}
+
+export interface OpenSkillRating {
+	mu: number;
+	sigma: number;
+	ordinal?: number;
+	totalGames: number;
 }
