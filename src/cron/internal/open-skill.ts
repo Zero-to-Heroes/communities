@@ -1,15 +1,12 @@
 import { S3 } from '@firestone-hs/aws-lambda-utils';
 import { ordinal, rate, rating } from 'openskill';
-import { GlobalOpenSkill, OpenSkill } from '../../model';
+import { GlobalOpenSkill, OPEN_SKILL_DEVIATION, OPEN_SKILL_MEAN, OpenSkill, OpenSkillRating } from '../../model';
 import { InternalReplaySummaryDbRow } from './replay-summary';
 
 const OPEN_SKILL_BUCKET = 'static.zerotoheroes.com';
 const OPEN_SKILL_KEY = `api/communities/open-skill.json`;
 
 const s3 = new S3();
-
-const DEFAULT_MU = 1200;
-const DEFAULT_SIGMA = 400;
 
 export const retrieveGlobalOpenSkill = async (): Promise<GlobalOpenSkill> => {
 	const infoStr = await s3.readContentAsString(OPEN_SKILL_BUCKET, OPEN_SKILL_KEY);
@@ -21,10 +18,8 @@ export const updateGlobalOpenSkill = async (globalOpenSkill: GlobalOpenSkill): P
 };
 
 export const buildNewOpenSkill = (openSkill: OpenSkill, games: readonly InternalReplaySummaryDbRow[]): OpenSkill => {
-	if (!openSkill?.ratings) {
-		openSkill = {
-			ratings: {},
-		};
+	if (!openSkill?.standard) {
+		openSkill = buildEmptyOpenSkill();
 	}
 	for (const game of games) {
 		openSkill = updateOpenSkill(openSkill, game);
@@ -32,29 +27,51 @@ export const buildNewOpenSkill = (openSkill: OpenSkill, games: readonly Internal
 	return openSkill;
 };
 
+export const buildEmptyOpenSkill = (): OpenSkill => ({
+	standard: {},
+	wild: {},
+	twist: {},
+	global: {},
+});
+
 const updateOpenSkill = (openSkill: OpenSkill, game: InternalReplaySummaryDbRow): OpenSkill => {
+	const skillContainer =
+		game.gameFormat === 'standard'
+			? openSkill.standard
+			: game.gameFormat === 'twist'
+			? openSkill.twist
+			: openSkill.wild;
+	updateSkillContainer(skillContainer, game);
+	updateSkillContainer(openSkill.global, game);
+	return openSkill;
+};
+
+const updateSkillContainer = (
+	skillContainer: { [battleTag: string]: OpenSkillRating },
+	game: InternalReplaySummaryDbRow,
+): void => {
 	const player1 = game.playerName;
-	let player1Rating = openSkill.ratings[player1];
+	let player1Rating = skillContainer[player1];
 	if (!player1Rating) {
 		player1Rating = {
-			mu: DEFAULT_MU,
-			sigma: DEFAULT_SIGMA,
+			mu: OPEN_SKILL_MEAN,
+			sigma: OPEN_SKILL_DEVIATION,
 			totalGames: 0,
 			ordinal: 0,
 		};
-		openSkill.ratings[player1] = player1Rating;
+		skillContainer[player1] = player1Rating;
 	}
 
 	const player2 = game.opponentName;
-	let player2Rating = openSkill.ratings[player2];
+	let player2Rating = skillContainer[player2];
 	if (!player2Rating) {
 		player2Rating = {
-			mu: DEFAULT_MU,
-			sigma: DEFAULT_SIGMA,
+			mu: OPEN_SKILL_MEAN,
+			sigma: OPEN_SKILL_DEVIATION,
 			totalGames: 0,
 			ordinal: 0,
 		};
-		openSkill.ratings[player2] = player2Rating;
+		skillContainer[player2] = player2Rating;
 	}
 
 	const ranks = game.result === 'won' ? [1, 2] : game.result === 'lost' ? [2, 1] : [1, 1];
@@ -71,6 +88,4 @@ const updateOpenSkill = (openSkill: OpenSkill, game: InternalReplaySummaryDbRow)
 	player2Rating.sigma = player2RatingAfter[0].sigma;
 	player2Rating.ordinal = ordinal(player2Rating);
 	player2Rating.totalGames++;
-
-	return openSkill;
 };

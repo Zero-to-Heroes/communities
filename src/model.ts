@@ -63,7 +63,7 @@ export interface CommunityInfoGameMode {
 	leaderboard: readonly LeaderboardEntry[];
 	gamesPerHour: { [hour: string]: number };
 	gamesInLastSevenDays?: number;
-	openSkill: OpenSkill;
+	// openSkill: OpenSkill;
 	// lastGames: readonly GameInfo[];
 }
 
@@ -124,7 +124,10 @@ export interface GlobalOpenSkill {
 }
 
 export interface OpenSkill {
-	readonly ratings: { [battleTag: string]: OpenSkillRating };
+	readonly standard: { [battleTag: string]: OpenSkillRating };
+	readonly wild: { [battleTag: string]: OpenSkillRating };
+	readonly twist: { [battleTag: string]: OpenSkillRating };
+	readonly global: { [battleTag: string]: OpenSkillRating };
 }
 
 export interface OpenSkillRating {
@@ -133,3 +136,6 @@ export interface OpenSkillRating {
 	ordinal?: number;
 	totalGames: number;
 }
+
+export const OPEN_SKILL_MEAN = 1200;
+export const OPEN_SKILL_DEVIATION = 400;

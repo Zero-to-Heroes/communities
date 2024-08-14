@@ -1,6 +1,7 @@
 import { getConnection } from '@firestone-hs/aws-lambda-utils';
 import { randomUUID } from 'crypto';
 import { sanitizeForOutput, saveCommunityInfo } from '../cron/internal/community';
+import { buildEmptyOpenSkill } from '../cron/internal/open-skill';
 import { CommunityInfo, CreateCommunityInput } from '../model';
 
 export default async (event): Promise<any> => {
@@ -89,42 +90,42 @@ const createCommunityInfoInS3 = async (communityId: string, input: CreateCommuni
 			leaderboard: [],
 			gamesPerHour: {},
 			gamesInLastSevenDays: 0,
-			openSkill: { ratings: {} },
+			// openSkill: buildEmptyOpenSkill(),
 		},
 		standardInfo: {
 			leaderboard: [],
 			gamesPerHour: {},
 			gamesInLastSevenDays: 0,
-			openSkill: { ratings: {} },
+			// openSkill: buildEmptyOpenSkill(),
 		},
 		wildInfo: {
 			leaderboard: [],
 			gamesPerHour: {},
 			gamesInLastSevenDays: 0,
-			openSkill: { ratings: {} },
+			// openSkill: buildEmptyOpenSkill(),
 		},
 		twistInfo: {
 			leaderboard: [],
 			gamesPerHour: {},
 			gamesInLastSevenDays: 0,
-			openSkill: { ratings: {} },
+			// openSkill: buildEmptyOpenSkill(),
 		},
 		battlegroundsInfo: {
 			leaderboard: [],
 			gamesPerHour: {},
 			gamesInLastSevenDays: 0,
-			openSkill: { ratings: {} },
+			// openSkill: buildEmptyOpenSkill(),
 		},
 		battlegroundsDuoInfo: {
 			leaderboard: [],
 			gamesPerHour: {},
 			gamesInLastSevenDays: 0,
-			openSkill: { ratings: {} },
+			// openSkill: buildEmptyOpenSkill(),
 		},
 		friendlyBattles: {
 			battles: [],
 			battlesPerDay: {},
-			openSkill: { ratings: {} },
+			openSkill: buildEmptyOpenSkill(),
 		},
 	};
 	await saveCommunityInfo(communityInfo);
