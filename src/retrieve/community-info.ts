@@ -1,8 +1,9 @@
-import { getConnection } from '@firestone-hs/aws-lambda-utils';
+import { ServerlessMysql } from 'serverless-mysql';
 import { retrieveCommunityInfoForOutput } from '../cron/internal/community';
 import { CommunityInfo, CommunityOverview } from '../model';
 
 export const retrieveCommunitiesOverview = async (
+	mysql: ServerlessMysql,
 	communityIds: readonly string[],
 ): Promise<readonly (CommunityOverview | CommunityInfo)[]> => {
 	if (!communityIds?.length) {
@@ -10,12 +11,10 @@ export const retrieveCommunitiesOverview = async (
 		return [];
 	}
 
-	const mysql = await getConnection();
 	const communityInfoQuery = `
         SELECT * FROM communities WHERE communityId IN (?)
     `;
 	const communityInfoResult: readonly any[] = await mysql.query(communityInfoQuery, [communityIds]);
-	mysql.end();
 
 	return await Promise.all(
 		communityInfoResult.map(async (dbInfo) => {
@@ -30,15 +29,16 @@ export const retrieveCommunitiesOverview = async (
 	);
 };
 
-export const retrieveJoinedCommunities = async (userName: string): Promise<readonly CommunityOverview[]> => {
+export const retrieveJoinedCommunities = async (
+	mysql: ServerlessMysql,
+	userName: string,
+): Promise<readonly CommunityOverview[]> => {
 	const query = `
         SELECT communityId FROM community_members WHERE userName = ?
     `;
-	const mysql = await getConnection();
 	const result: any[] = await mysql.query(query, [userName]);
 	console.log('retrieved communities', result);
-	mysql.end();
 	const joinedCommunityIds = result.map((r) => r.communityId).filter((id) => !!id);
 	console.debug('got comunities for', userName, joinedCommunityIds);
-	return retrieveCommunitiesOverview(joinedCommunityIds);
+	return retrieveCommunitiesOverview(mysql, joinedCommunityIds);
 };

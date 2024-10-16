@@ -1,3 +1,4 @@
+import { getConnection } from '@firestone-hs/aws-lambda-utils';
 import { CommunityOverview, UserInfoInput } from '../model';
 import { retrieveJoinedCommunities } from './community-info';
 
@@ -21,7 +22,9 @@ export default async (event): Promise<any> => {
 
 	console.debug('received event', event);
 	const input: UserInfoInput = JSON.parse(event.body);
-	const joinedCommunities: readonly CommunityOverview[] = await retrieveJoinedCommunities(input.userName);
+	const mysql = await getConnection();
+	const joinedCommunities: readonly CommunityOverview[] = await retrieveJoinedCommunities(mysql, input.userName);
+	await mysql.end();
 
 	return {
 		statusCode: 200,

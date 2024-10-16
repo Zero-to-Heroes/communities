@@ -1,7 +1,8 @@
-import { getConnectionReadOnly } from '@firestone-hs/aws-lambda-utils';
+import { ServerlessMysql } from 'serverless-mysql';
 import { InternalCommunityInfo } from './communities';
 
 export const getRecentGames = async (
+	mysql: ServerlessMysql,
 	lastProcessedId: number | null,
 	communityInfos: readonly InternalCommunityInfo[],
 ): Promise<{ games: readonly InternalReplaySummaryDbRow[]; newLastProcessedId: number }> => {
@@ -13,7 +14,6 @@ export const getRecentGames = async (
 	// 	uniqueUserNames,
 	// 	communityInfos.flatMap((info) => info.userNames),
 	// );
-	const mysql = await getConnectionReadOnly();
 	const query = `
 		SELECT * FROM replay_summary
 		WHERE id > ?
@@ -21,7 +21,6 @@ export const getRecentGames = async (
 		AND userName IS NOT NULL
 	`;
 	const games: readonly InternalReplaySummaryDbRow[] = await mysql.query(query, [lastProcessedId]);
-	mysql.end();
 	const result = games.filter((game) => uniqueUserNames.includes(game.userName));
 	return { games: result, newLastProcessedId: games.length ? games[games.length - 1].id : lastProcessedId };
 };

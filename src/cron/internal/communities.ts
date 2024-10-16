@@ -1,5 +1,6 @@
 /* eslint-disable no-extra-boolean-cast */
-import { getConnectionReadOnly, groupByFunction } from '@firestone-hs/aws-lambda-utils';
+import { groupByFunction } from '@firestone-hs/aws-lambda-utils';
+import { ServerlessMysql } from 'serverless-mysql';
 import { GlobalOpenSkill } from '../../model';
 import { updateCommunity } from './community';
 import { InternalReplaySummaryDbRow } from './replay-summary';
@@ -19,11 +20,9 @@ export const updateCommunities = async (
 	}
 };
 
-export const getUsersInCommunities = async (): Promise<readonly InternalCommunityInfo[]> => {
-	const mysql = await getConnectionReadOnly();
+export const getUsersInCommunities = async (mysql: ServerlessMysql): Promise<readonly InternalCommunityInfo[]> => {
 	const query = `SELECT communityId, userName FROM community_members`;
 	const result: readonly any[] = await mysql.query(query);
-	mysql.end();
 	const groupedByCommunity = groupByFunction((info: { communityId: string; userName: string }) => info.communityId)(
 		result,
 	);
